@@ -1,0 +1,26 @@
+#first reads how many elements in array, then reads the elements
+read
+store @0
+load #0
+store @1
+inc
+inc
+read
+store i
+inc
+load @1
+add #1
+store @1
+cmp @0 @1
+jne 7
+read
+store @0
+write
+cmp @0 i
+je 22
+dec
+load @1
+add #-1
+store @1
+jump 17
+exit

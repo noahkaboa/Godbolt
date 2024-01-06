@@ -18,6 +18,8 @@ var ram [64]int
 
 func main() {
 	gbFile := flag.String("f", "", "The file to run")
+	inDebug := flag.Bool("d", false, "Run in debug mode: print out the accumulator, index register, program counter, and RAM after each instruction")
+
 	flag.Parse()
 	file, err := os.Open(*gbFile)
 	if err != nil {
@@ -47,11 +49,12 @@ func main() {
 	running := true
 
 	for programCounter := 0; running; programCounter++ {
-		fmt.Printf("Accumulator: %d\n", accumulator)
-		fmt.Printf("Index Register: %d\n", indexRegister)
-		fmt.Printf("Program Counter: %d\n", programCounter)
-		fmt.Printf("RAM: %v\n", ram)
-
+		if *inDebug {
+			fmt.Printf("Accumulator: %d\n", accumulator)
+			fmt.Printf("Index Register: %d\n", indexRegister)
+			fmt.Printf("Program Counter: %d\n", programCounter)
+			fmt.Printf("RAM: %v\n", ram)
+		}
 		//ignore comments and whitespace
 		if strings.HasPrefix(prgrm[programCounter], "#") || prgrm[programCounter] == "\n" || prgrm[programCounter] == "" {
 			continue
