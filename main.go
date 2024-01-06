@@ -32,6 +32,7 @@ func main() {
 
 	//Load program
 	var prgrm []string
+	prgrm = append(prgrm, "#Make lines 1 indexed")
 	var hasExit bool
 	for scanner.Scan() {
 		prgrm = append(prgrm, scanner.Text())
@@ -146,6 +147,35 @@ func main() {
 				log.Fatal("Unknown add command: ", prgrm[programCounter])
 			}
 
+		case "mult":
+			multValue := ""
+			if len(strings.Split(prgrm[programCounter], " ")) == 2 {
+				multValue = strings.Split(prgrm[programCounter], " ")[1]
+			} else {
+				log.Fatal("Invalid mult command: ", prgrm[programCounter])
+			}
+			if strings.HasPrefix(multValue, "@") {
+				//Multiply the accumulator by the value at the given address
+				ramIndex := strings.Split(multValue, "@")[1]
+				ri, err := strconv.Atoi(ramIndex)
+				if err != nil {
+					log.Fatal("Invalid ram index: ", ramIndex)
+				}
+				accumulator *= ram[ri]
+			} else if strings.HasPrefix(multValue, "#") {
+				//Multiply the accumulator by the value of the number
+				num := strings.Split(multValue, "#")[1]
+				n, err := strconv.Atoi(num)
+				if err != nil {
+					log.Fatal("Invalid number: ", num)
+				}
+				accumulator *= n
+			} else if multValue == "i" {
+				//Multiply the accumulator by the value of the index register
+				accumulator *= ram[indexRegister]
+			} else {
+				log.Fatal("Unknown mult command: ", prgrm[programCounter])
+			}
 		case "jump":
 			jumpValue := ""
 			if len(strings.Split(prgrm[programCounter], " ")) == 2 {
@@ -169,16 +199,16 @@ func main() {
 			if err != nil {
 				log.Fatal("Error reading input: ", err)
 			}
-			input = strings.TrimSuffix(input, "\n")
+			input = strings.TrimSpace(input)
 			n, err := strconv.Atoi(input)
 			if err != nil {
-				log.Fatal("Invalid input: ", input)
+				log.Fatal("Invalid input: not a number: ", input)
 			}
 			accumulator = n
 
 		case "write":
 			//Write the value of the accumulator to stdout
-			println(accumulator)
+			println("STDOUT: ", accumulator)
 
 		case "exit":
 			running = false
@@ -246,6 +276,7 @@ func main() {
 		case "je":
 			//Jump to the given address if the accumulator is equal to 0
 			if accumulator == 0 {
+				println("Jumping")
 				jumpValue := ""
 				if len(strings.Split(prgrm[programCounter], " ")) == 2 {
 					jumpValue = strings.Split(prgrm[programCounter], " ")[1]
