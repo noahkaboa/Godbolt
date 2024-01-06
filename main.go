@@ -261,6 +261,96 @@ func main() {
 				}
 				programCounter = jumpPoint
 			}
+		case "jne":
+			//Jump to the given address if the accumulator is not equal to 0
+			if accumulator != 0 {
+				jumpValue := ""
+				if len(strings.Split(prgrm[programCounter], " ")) == 2 {
+					jumpValue = strings.Split(prgrm[programCounter], " ")[1]
+				} else {
+					log.Fatal("Invalid jump command: ", prgrm[programCounter])
+				}
+				jumpPoint, err := strconv.Atoi(jumpValue)
+				if err != nil {
+					log.Fatal("Invalid jump point: ", jumpPoint)
+				}
+				if jumpPoint < 0 || jumpPoint > len(prgrm) {
+					log.Fatal("Jump point out of bounds: ", jumpPoint)
+				}
+				programCounter = jumpPoint
+			}
+		case "jg":
+			//Jump to the given address if the accumulator is greater than 0
+			if accumulator > 0 {
+				jumpValue := ""
+				if len(strings.Split(prgrm[programCounter], " ")) == 2 {
+					jumpValue = strings.Split(prgrm[programCounter], " ")[1]
+				} else {
+					log.Fatal("Invalid jump command: ", prgrm[programCounter])
+				}
+				jumpPoint, err := strconv.Atoi(jumpValue)
+				if err != nil {
+					log.Fatal("Invalid jump point: ", jumpPoint)
+				}
+				if jumpPoint < 0 || jumpPoint > len(prgrm) {
+					log.Fatal("Jump point out of bounds: ", jumpPoint)
+				}
+				programCounter = jumpPoint
+			}
+		case "jge":
+			//Jump to the given address if the accumulator is greater than or equal to 0
+			if accumulator >= 0 {
+				jumpValue := ""
+				if len(strings.Split(prgrm[programCounter], " ")) == 2 {
+					jumpValue = strings.Split(prgrm[programCounter], " ")[1]
+				} else {
+					log.Fatal("Invalid jump command: ", prgrm[programCounter])
+				}
+				jumpPoint, err := strconv.Atoi(jumpValue)
+				if err != nil {
+					log.Fatal("Invalid jump point: ", jumpPoint)
+				}
+				if jumpPoint < 0 || jumpPoint > len(prgrm) {
+					log.Fatal("Jump point out of bounds: ", jumpPoint)
+				}
+				programCounter = jumpPoint
+			}
+		case "jl":
+			//Jump to the given address if the accumulator is less than 0
+			if accumulator < 0 {
+				jumpValue := ""
+				if len(strings.Split(prgrm[programCounter], " ")) == 2 {
+					jumpValue = strings.Split(prgrm[programCounter], " ")[1]
+				} else {
+					log.Fatal("Invalid jump command: ", prgrm[programCounter])
+				}
+				jumpPoint, err := strconv.Atoi(jumpValue)
+				if err != nil {
+					log.Fatal("Invalid jump point: ", jumpPoint)
+				}
+				if jumpPoint < 0 || jumpPoint > len(prgrm) {
+					log.Fatal("Jump point out of bounds: ", jumpPoint)
+				}
+				programCounter = jumpPoint
+			}
+		case "jle":
+			//Jump to the given address if the accumulator is less than or equal to 0
+			if accumulator <= 0 {
+				jumpValue := ""
+				if len(strings.Split(prgrm[programCounter], " ")) == 2 {
+					jumpValue = strings.Split(prgrm[programCounter], " ")[1]
+				} else {
+					log.Fatal("Invalid jump command: ", prgrm[programCounter])
+				}
+				jumpPoint, err := strconv.Atoi(jumpValue)
+				if err != nil {
+					log.Fatal("Invalid jump point: ", jumpPoint)
+				}
+				if jumpPoint < 0 || jumpPoint > len(prgrm) {
+					log.Fatal("Jump point out of bounds: ", jumpPoint)
+				}
+				programCounter = jumpPoint
+			}
 
 		default:
 			log.Fatal("Unknown command: ", cmd)
