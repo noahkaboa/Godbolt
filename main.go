@@ -4,6 +4,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -23,17 +24,30 @@ func main() {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
 
 	//Load program
 	var prgrm []string
+	var hasExit bool
 	for scanner.Scan() {
 		prgrm = append(prgrm, scanner.Text())
+		if strings.HasPrefix(scanner.Text(), "exit") {
+			hasExit = true
+		}
+	}
+	if !hasExit {
+		log.Fatal("Program must have an exit command")
 	}
 
 	running := true
 
-	programCounter := 0
-	for running {
+	for programCounter := 0; running; programCounter++ {
+		fmt.Printf("Accumulator: %d\n", accumulator)
+		fmt.Printf("Index Register: %d\n", indexRegister)
+		fmt.Printf("Program Counter: %d\n", programCounter)
+		fmt.Printf("RAM: %v\n", ram)
 
 		//ignore comments
 		if strings.HasPrefix(prgrm[programCounter], "#") {
@@ -164,13 +178,92 @@ func main() {
 			//Write the value of the accumulator to stdout
 			println(accumulator)
 
+		case "exit":
+			running = false
+			break
+
+		case "cmp":
+			cmpValueA := ""
+			cmpValueB := ""
+
+			aValue := 0
+			bValue := 0
+
+			if len(strings.Split(prgrm[programCounter], " ")) == 3 {
+				cmpValueA = strings.Split(prgrm[programCounter], " ")[1]
+				cmpValueB = strings.Split(prgrm[programCounter], " ")[2]
+			} else {
+				log.Fatal("Invalid number of arguments for cmp command: ", prgrm[programCounter])
+			}
+			if strings.HasPrefix(cmpValueA, "@") {
+				ramIndex := strings.Split(cmpValueA, "@")[1]
+				ri, err := strconv.Atoi(ramIndex)
+				if err != nil {
+					log.Fatal("Invalid ram index: ", ramIndex)
+				}
+				aValue = ram[ri]
+			} else if strings.HasPrefix(cmpValueA, "#") {
+				num := strings.Split(cmpValueA, "#")[1]
+				n, err := strconv.Atoi(num)
+				if err != nil {
+					log.Fatal("Invalid number: ", num)
+				}
+				aValue = n
+			} else if cmpValueA == "i" {
+				aValue = ram[indexRegister]
+			} else {
+				log.Fatal("Unknown cmp command argument: ", prgrm[programCounter])
+			}
+			if strings.HasPrefix(cmpValueB, "@") {
+				ramIndex := strings.Split(cmpValueB, "@")[1]
+				ri, err := strconv.Atoi(ramIndex)
+				if err != nil {
+					log.Fatal("Invalid ram index: ", ramIndex)
+				}
+				bValue = ram[ri]
+			} else if strings.HasPrefix(cmpValueB, "#") {
+				num := strings.Split(cmpValueB, "#")[1]
+				n, err := strconv.Atoi(num)
+				if err != nil {
+					log.Fatal("Invalid number: ", num)
+				}
+				bValue = n
+			} else if cmpValueB == "i" {
+				bValue = ram[indexRegister]
+			} else {
+				log.Fatal("Unknown cmp command argument: ", prgrm[programCounter])
+			}
+
+			if aValue == bValue {
+				accumulator = 0
+			} else if aValue > bValue {
+				accumulator = 1
+			} else {
+				accumulator = -1
+			}
+		case "je":
+			//Jump to the given address if the accumulator is equal to 0
+			if accumulator == 0 {
+				jumpValue := ""
+				if len(strings.Split(prgrm[programCounter], " ")) == 2 {
+					jumpValue = strings.Split(prgrm[programCounter], " ")[1]
+				} else {
+					log.Fatal("Invalid jump command: ", prgrm[programCounter])
+				}
+				jumpPoint, err := strconv.Atoi(jumpValue)
+				if err != nil {
+					log.Fatal("Invalid jump point: ", jumpPoint)
+				}
+				if jumpPoint < 0 || jumpPoint > len(prgrm) {
+					log.Fatal("Jump point out of bounds: ", jumpPoint)
+				}
+				programCounter = jumpPoint
+			}
+
 		default:
 			log.Fatal("Unknown command: ", cmd)
 		}
-		programCounter++
-	}
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
+
 	}
 
 }

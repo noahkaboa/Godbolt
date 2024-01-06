@@ -1,3 +1,12 @@
 #This program prints out the fibonacci numbers
-rgd askfh
-a aerfd asdkhf
+load #1
+store @0
+store @1
+load i
+inc
+add i
+inc
+store i
+dec
+jump 3
+exit
