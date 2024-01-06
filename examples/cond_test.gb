@@ -1,0 +1,12 @@
+#Should load 1 2 1 2 etc into RAM
+load #1
+store i
+inc
+load #2
+store i
+cmp #2 @0
+inc
+jg 1
+
+write
+exit

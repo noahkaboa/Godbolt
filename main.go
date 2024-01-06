@@ -51,8 +51,8 @@ func main() {
 		fmt.Printf("Program Counter: %d\n", programCounter)
 		fmt.Printf("RAM: %v\n", ram)
 
-		//ignore comments
-		if strings.HasPrefix(prgrm[programCounter], "#") {
+		//ignore comments and whitespace
+		if strings.HasPrefix(prgrm[programCounter], "#") || prgrm[programCounter] == "\n" || prgrm[programCounter] == "" {
 			continue
 		}
 		switch cmd := strings.Split(prgrm[programCounter], " ")[0]; cmd {
