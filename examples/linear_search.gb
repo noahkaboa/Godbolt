@@ -1,4 +1,4 @@
-#first reads how many elements in array, then reads the elements
+#first reads how many elements in array, then reads the elements. Note, please don't have any 0s in the list
 read
 store @0
 load #0
@@ -15,12 +15,18 @@ cmp @0 @1
 jne 7
 read
 store @0
-write
-cmp @0 i
-je 22
+load #0
+store @1
 dec
+cmp i #0
+jne 19
+inc
+load @1
+add #1
+store @1
+cmp i @0
+jne 22
 load @1
 add #-1
-store @1
-jump 17
+write
 exit
