@@ -3,10 +3,11 @@ load #1
 store @0
 store @1
 load i
+write
 inc
 add i
 inc
 store i
 dec
-jump 3
+jump 4
 exit
