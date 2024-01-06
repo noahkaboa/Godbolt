@@ -4,6 +4,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -16,8 +17,9 @@ var indexRegister = 0
 var ram [64]int
 
 func main() {
-
-	file, err := os.Open("examples/fibonacci.gb")
+	gbFile := flag.String("f", "", "The file to run")
+	flag.Parse()
+	file, err := os.Open(*gbFile)
 	if err != nil {
 		log.Fatal(err)
 	}
